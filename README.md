@@ -64,7 +64,7 @@ All code for the models is found in:
 
 A specialized dataset consisting of 1025 inspection images is created for this thesis. The images are captured under varying light conditions and a corresponding masks is generated to highlight the reflections. The dataset is split into Train (820 images) and Test (205 images). 
 
-<img src="./extra-images/inspect-dataset.jpg" alt="Inspect Dataset">
+<img src="./images/inspect-dataset.jpg" alt="Inspect Dataset">
 
 ***
 
