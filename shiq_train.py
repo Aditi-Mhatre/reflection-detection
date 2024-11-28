@@ -7,7 +7,7 @@ import torch.optim as optim
 from torchmetrics import Accuracy, JaccardIndex, Dice
 from model import UNet, AttentionUNet
 from fvcore.nn import FlopCountAnalysis
-from unetr import UNetR2D
+from unetr_new import UNetR2D
 from unetr_af import UNetR2D_AF
 import torchvision
 import logging
@@ -37,7 +37,7 @@ IMAGE_HEIGHT = 224
 IMAGE_WIDTH = 224
 PIN_MEMORY = True
 LOAD_MODEL = False
-MODEL_SAVE_PATH = "./models/inspect_eca_unetr.pth"
+MODEL_SAVE_PATH = "./models/inspect_unetr.pth"
 TRAIN_IMG_DIR = "./SHIQ/train/images"
 TRAIN_MASK_DIR = "./SHIQ/train/masks"
 TEST_IMG_DIR = "./SHIQ/test/images"
@@ -97,17 +97,6 @@ def train_fn(loader, model, optimizer, loss_fn, scaler):
         scaler.step(optimizer)
         scaler.update()
 
-    
-    # with torch.cuda.amp.autocast():
-    #     predictions = model(data)
-    #     loss = loss_fn(predictions, targets)
-    
-    # optimizer.zero_grad()
-    # scaler.scale(loss).backward()
-    # scaler.step(optimizer)
-    # scaler.update()
-
-    #loop.set_postfix(loss=loss.item())
     return epoch_loss/len(loader)
 
 
@@ -122,14 +111,7 @@ def evaluate_fn(loader, model, loss_fn, device):
             mask = img_mask[1].float().unsqueeze(1).to(device=DEVICE)
             y_pred = model(img)
             loss = loss_fn(y_pred, mask)
-            #plt.imsave('evaluation_8.png', y_pred.squeeze().detach().cpu(), cmap="gray")
-            # preds = preds.to(device=device)
-            # y = y.float().unsqueeze(1).to(device=device)
             epoch_loss += loss.item()
-            #accuracy_metric.update(y_pred, mask.int())
-            #iou_metric.update(y_pred, mask.int())
-        #accuracy = accuracy_metric.compute().item()
-        #iou = iou_metric.compute().item()
     return epoch_loss / len(loader)
 
 def save_predictions_as_imgs(
@@ -149,7 +131,7 @@ def save_predictions_as_imgs(
 
 
 def main():
-    run = wandb.init(project="SHIQ UNetR-AF ECA Experiments + FTL", config={"learning_rate": 1e-3, "epochs": 50, "batch_size": 4} )
+    #run = wandb.init(project="SHIQ UNetR-AF ECA Experiments + FTL", config={"learning_rate": 1e-3, "epochs": 50, "batch_size": 4} )
 
     LEARNING_RATE = wandb.config.learning_rate
     BATCH_SIZE = wandb.config.batch_size
@@ -186,12 +168,14 @@ def main():
 
 
     model = UNetR2D_AF(vit).to(DEVICE)
+
+    # Select loss function 
     #loss_fn = nn.BCEWithLogitsLoss()
-    # if OPTIMIZER == "adam":
-    #     optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE)
-    # elif OPTIMIZER== "sgd":
-    #     optimizer = optim.SGD(model.parameters(), lr=LEARNING_RATE, momentum=0.9)
     loss_fn = FocalTverskyLoss()
+
+    #Select optimizer
+
+    #optimizer = optim.SGD(model.parameters(), lr=LEARNING_RATE, momentum=0.9)
     optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE, weight_decay=1e-5)
     # total_params = sum(p.numel() for p in model.parameters())
     # flops = FlopCountAnalysis(model, torch.randn((1,3,200,200)))
@@ -224,14 +208,16 @@ def main():
         val_loss = evaluate_fn(val_loader, model, loss_fn, DEVICE)
         val_accuracy, val_dice, val_iou = check_accuracy(val_loader, model, device=DEVICE)
         #logging.info(f"Train Loss:{train_loss: .4f}, Validation Loss: {val_loss:.4f}', Validation Accuracy:{val_accuracy: .4f}, IOU score:{val_iou: .4f}, Dice:{val_dice: .4f}  ")
-        wandb.log({
-            "Epoch": epoch,
-            "Train Loss": train_loss, 
-            "Validation Loss": val_loss,
-            "Validation Accuracy": val_accuracy, 
-            "IOU score": val_iou, 
-            "Dice": val_dice}
-            , step=epoch)
+
+        #Uncomment to log metrics to wandb
+        # wandb.log({
+        #     "Epoch": epoch,
+        #     "Train Loss": train_loss, 
+        #     "Validation Loss": val_loss,
+        #     "Validation Accuracy": val_accuracy, 
+        #     "IOU score": val_iou, 
+        #     "Dice": val_dice}
+        #     , step=epoch)
 
         current_metric = val_iou
         if current_metric < best_metric:
