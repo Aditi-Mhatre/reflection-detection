@@ -8,6 +8,7 @@ from torchvision import models
 from cbam import *
 from se_block import *
 
+# Convolutional block
 class ConvBlock(nn.Module):
     def __init__(self, in_channels, out_channels, kernel_size=3, padding=1):
         super().__init__()
@@ -29,7 +30,9 @@ class DeconvBlock(nn.Module):
         return self.deconv(x)
 
 
+# UNETR Attention Fusion model
 class UNetR2D_AF(nn.Module):
+    # Using the pre-trained ViT model as the encoder
     def __init__(self, cg, vit_model="google/vit-base-patch16-224-in21k", pretrained=True, num_classes=1):
         super().__init__()
         self.cg = cg
@@ -42,12 +45,12 @@ class UNetR2D_AF(nn.Module):
         self.s1 = nn.Sequential(
             DeconvBlock(cg["hidden_dim"], 512),
             ConvBlock(512, 512),
-            SELayer(512, reduction=16),
+            SELayer(512, reduction=16), # Squeeze and Excitation block for Skip Connection
         )
         self.c1 = nn.Sequential(
             ConvBlock(512 + 512, 512),
             ConvBlock(512, 512),
-            CBAM(512),
+            CBAM(512), # Convolutional Block Attention Module for Decoder
         )
 
         # Decoder 2
@@ -138,7 +141,7 @@ class UNetR2D_AF(nn.Module):
 
         # Decoder 4
         x = self.d4(x)
-        s = self.s4(x)  # Assuming the original input image is used for the final skip connection
+        s = self.s4(x)  
         x = torch.cat([x, s], dim=1)
         x = self.c4(x)
 
@@ -151,7 +154,7 @@ class UNetR2D_AF(nn.Module):
 # Configuration settings
 if __name__ == '__main__':
     config = {}
-    config["image_size"] = 224  # Set to 224
+    config["image_size"] = 224  
     config["num_layers"] = 12
     config["hidden_dim"] = 768
     config["mlp_dim"] = 3072
