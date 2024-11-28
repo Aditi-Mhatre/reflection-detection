@@ -2,6 +2,7 @@
 
 This repository contains the code to detect light reflections for reactive planning in autonomous inspections. The focus of this project is semantic segmentation methods by using deep-learning based methdologies. 
 
+<img src="./images/qualitative-results.png" alt="Results with Deep Learning Methods">
 <img src="./images/more-results.jpg" alt="Results with Deep Learning Methods">
 
 The objective of this thesis is to detect light reflections and aid in the reactive planning of autonomous inspections. Based on the semantic segmentation models (whose results are shown above), the coordinates of the reflections are calculated and returned in the post-processing. 
@@ -41,11 +42,9 @@ There are five models implemented (across three datasets: Inspection (see below)
 - [UNETR-Attention Fusion (UNETR-AF)](./unetr_af.py)
 
 Note:
-<ul>
-    <li>U-Net and Attention U-Net are saved in [model.py](./model.py)</li>
-    <li>U-Net++ is imported from the segmentation model library</li>
-    <li>UNETR and UNETR-AF have their own files</li>
-</ul>
+- U-Net and Attention U-Net are saved in [model.py](./model.py)
+- U-Net++ is imported from the segmentation model library
+- UNETR and UNETR-AF have their own files
 
 ### Inspection Dataset
 
