@@ -36,15 +36,6 @@ def get_loaders(
     )
 
     train_ind, val_ind = train_test_split(list(range(len(ds))), test_size=0.2, random_state=42)
-    #print(f"train index: {train_ind}, val index:{val_ind} ")
-
-    # image_paths = read_path_from_txt(train_dir_txt)
-    # masks_paths = read_path_from_txt(train_mask_txt)
-
-    # train_img_paths =[image_paths[i] for i in train_ind]
-    # train_mask_paths =[masks_paths[i] for i in train_ind]
-    # test_img_paths = [image_paths[i] for i in val_ind]
-    # test_mask_paths =[masks_paths[i] for i in val_ind]
     
     train_ds = InspectDataset(image_dir=train_dir, mask_dir=train_mask_dir, transform=train_transform)
     val_ds = InspectDataset(image_dir=train_dir, mask_dir=train_mask_dir, transform=val_transforms)
@@ -91,12 +82,8 @@ def check_accuracy(loader, model, device="cuda"):
             x = x.to(device)
             y = y.to(device).unsqueeze(1)
             predictions = model(x)
-            #plt.imsave("predictions_before_sig_9.png", predictions.squeeze().detach().cpu(), cmap="gray")
             preds = torch.sigmoid(predictions)
-            #plt.imsave("predictions_after_9.png", preds.squeeze().detach().cpu(), cmap="gray")
             preds = (preds > 0.5).float()
-            #plt.imsave("y_9.png", y.squeeze().detach().cpu(), cmap="gray")
-            #plt.imsave("preds_after_threshold_9.png", preds.squeeze().detach().cpu(), cmap="gray")
             num_correct += (preds == y).sum()
             num_pixels += torch.numel(preds)
             dice_score += (2 * (preds * y).sum())/((preds + y).sum() + 1e-8)
