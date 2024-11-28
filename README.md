@@ -45,7 +45,8 @@ Note:
 - U-Net++ is imported from the segmentation model library
 - UNETR and UNETR-AF have their own files
 
-### Inspection Dataset
+
+## Inspection Dataset
 
 A specialized dataset consisting of 1025 inspection images is created for this thesis. The images are captured under varying light conditions and a corresponding masks is generated to highlight the reflections. The dataset is split into Train (820 images) and Test (205 images). 
 
