@@ -182,8 +182,8 @@ def main():
     There are five models : UNet, AttentionUNet, UNet++, UNETR and UNETR-AF
 
     For UNETR, UNETR_AF = pass the vit configuration in the function
-        1. model = UNETR(vit).to(DEVICE)  
-        2. model = UNETR_AF(vit).to(DEVICE)
+        1. model = UNetR2D(vit).to(DEVICE)  
+        2. model = UNetR2D_AF(vit).to(DEVICE)
 
     For UNet, AttentionUNet, define the model as follows:
         1. model = UNet(in_channels=3, out_channels=1).to(DEVICE)
@@ -203,11 +203,7 @@ def main():
 
     #Change this line based on the Model you want to use
     model = AttentionUNet(in_channels=3, out_channels=1).to(DEVICE)
-    
-    # if OPTIMIZER == "adam":
-    #     optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE)
-    # elif OPTIMIZER== "sgd":
-    #     optimizer = optim.SGD(model.parameters(), lr=LEARNING_RATE, momentum=0.9)
+
     
     """ Select Loss function based on preference"""
     loss_fn = nn.BCEWithLogitsLoss()
