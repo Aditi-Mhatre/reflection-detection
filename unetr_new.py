@@ -1,3 +1,8 @@
+"""
+  PyTorch implementation of UNETR model
+  Adapted architecture from 3D images to 2D images for semantic segmentation
+"""
+
 import torch
 import torch.nn as nn
 import timm
@@ -6,6 +11,7 @@ from fvcore.nn import FlopCountAnalysis
 from transformers import ViTModel, EncoderDecoderModel
 from torchvision import models
 
+# Convolutional block
 class ConvBlock(nn.Module):
     def __init__(self, in_channels, out_channels, kernel_size=3, padding=1):
         super().__init__()
@@ -18,6 +24,7 @@ class ConvBlock(nn.Module):
     def forward(self, x):
         return self.layers(x)
 
+# Deconvolutional block
 class DeconvBlock(nn.Module):
     def __init__(self, in_channels, out_channels):
         super().__init__()
@@ -51,7 +58,9 @@ class SEBlock(nn.Module):
         return x * y
 
 
+# UNETR model
 class UNetR2D(nn.Module):
+    # Using the pre-trained ViT model as the encoder
     def __init__(self, cg, vit_model="google/vit-base-patch16-224-in21k", pretrained=True, num_classes=1):
         super().__init__()
         self.cg = cg
@@ -118,7 +127,7 @@ class UNetR2D(nn.Module):
         hidden_states = vit_outputs.hidden_states  # Tuple of hidden states at each layer
 
         # Reshape the hidden states from (batch_size, sequence_length, hidden_dim) to (batch_size, hidden_dim, H, W)
-        # The sequence_length should be num_patches + 1 (for the class token), so we exclude the class token and reshape the patches
+        # The sequence_length should be num_patches + 1 (for the class token), so exclude the class token and reshape the patches
         batch_size, seq_length, hidden_dim = hidden_states[-1].size()
         
         patch_size = self.cg["patch_size"]
@@ -150,7 +159,7 @@ class UNetR2D(nn.Module):
 
         # Decoder 4
         x = self.d4(x)
-        s = self.s4(x)  # Assuming the original input image is used for the final skip connection
+        s = self.s4(x)  
         x = torch.cat([x, s], dim=1)
         x = self.c4(x)
 
@@ -165,8 +174,8 @@ if __name__ == '__main__':
     config = {}
     config["image_size"] = 224  # Set to 224
     config["num_layers"] = 12
-    config["hidden_dim"] = 768
-    config["mlp_dim"] = 3072
+    config["hidden_dim"] = 768 
+    config["mlp_dim"] = 3072 
     config["num_heads"] = 12
     config["dropout_rate"] = 0.1
     config["num_patches"] = (config["image_size"] // 16) ** 2  # Since 224 / 16 = 14
