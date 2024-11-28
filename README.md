@@ -2,7 +2,6 @@
 
 This repository contains the code to detect light reflections for reactive planning in autonomous inspections. The focus of this project is semantic segmentation methods by using deep-learning based methdologies. 
 
-<img src="./images/qualitative-results-2.jpg" alt="Results with Deep Learning Methods">
 <img src="./images/more-results.jpg" alt="Results with Deep Learning Methods">
 
 The objective of this thesis is to detect light reflections and aid in the reactive planning of autonomous inspections. Based on the semantic segmentation models (whose results are shown above), the coordinates of the reflections are calculated and returned in the post-processing. 
