@@ -34,26 +34,7 @@ class InspectDataset(Dataset):
         mask_path = os.path.join(self.mask_dir, self.masks[index])
         image = np.array(Image.open(img_path).convert("RGB"))
         mask = np.array(Image.open(mask_path).convert("L"), dtype=np.float32)
-        # image = Image.open(self.image_dir[index]).convert("RGB")
-        # image = np.array(image)
-        # mask = Image.open(self.mask_dir[index]).convert("L")
-        # mask = np.array(mask)
         mask[mask == 255.0] = 1.0
-
-        # #Display the image
-        # plt.imshow(image)
-        # plt.axis('off')  # Hide axes
-        # plt.show()
-
-        # # Display the mask
-        # plt.imshow(mask, cmap='gray')  # Use 'gray' colormap for single-channel images
-        # plt.axis('off')  # Hide axes
-        # plt.show()
-
-        # # Save the image
-        # plt.imsave('image_5.png', image)
-        # # Save the mask
-        # plt.imsave('mask_5.png', mask, cmap='gray')
             
         if self.transform is not None:
             augmentations = self.transform(image=image, mask=mask)
