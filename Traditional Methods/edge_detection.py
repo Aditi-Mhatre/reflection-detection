@@ -36,5 +36,5 @@ for i in range(4):
     plt.title(titles[i], fontsize=20)
     plt.axis('off')
 plt.tight_layout()
-plt.savefig('edge_comparison.png')
+plt.savefig('edge_comparison.png', bbox_inches='tight')
 plt.show()
