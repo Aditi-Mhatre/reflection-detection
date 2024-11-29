@@ -16,12 +16,12 @@ _, otsu_thresh = cv2.threshold(image, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTS
 
 # Apply Mean adaptive thresholding
 mean_thresh = cv2.adaptiveThreshold(
-    image, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 11, 2
+    image, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY_INV, 11, 2
 )
 
 # Apply Gaussian adaptive thresholding
 gaussian_thresh = cv2.adaptiveThreshold(
-    image, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2
+    image, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 11, 2
 )
 
 # Plot the images with labels
