@@ -26,28 +26,15 @@ edges_laplacian = cv2.Laplacian(image, cv2.CV_64F)
 edges_laplacian = np.uint8(np.abs(edges_laplacian))  # Convert to uint8
 
 # Plot the results
-plt.figure(figsize=(15, 10))
+titles = ["Original Image", "Canny Edge Detection", "Sobel Edge Detection", "Laplacian Edge Detection"]
+images = [image, edges_canny, edges_sobel, edges_laplacian]
 
-plt.subplot(2, 2, 1)
-plt.imshow(image, cmap='gray')
-plt.title('Original Image', fontsize=24)
-plt.axis('off')
-
-plt.subplot(2, 2, 2)
-plt.imshow(edges_canny, cmap='gray')
-plt.title('Canny Edge Detection', fontsize=24)
-plt.axis('off')
-
-plt.subplot(2, 2, 3)
-plt.imshow(edges_sobel, cmap='gray')
-plt.title('Sobel Edge Detection', fontsize=24)
-plt.axis('off')
-
-plt.subplot(2, 2, 4)
-plt.imshow(edges_laplacian, cmap='gray')
-plt.title('Laplacian Edge Detection', fontsize=24)
-plt.axis('off')
-
+plt.figure(figsize=(12, 8))
+for i in range(4):
+    plt.subplot(2, 2, i + 1)
+    plt.imshow(images[i], cmap='gray')
+    plt.title(titles[i], fontsize=20)
+    plt.axis('off')
 plt.tight_layout()
-plt.savefig('edge_comparison.png', bbox_inches='tight')
+plt.savefig('edge_comparison.png')
 plt.show()
