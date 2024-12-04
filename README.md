@@ -58,6 +58,7 @@ Link: https://drive.google.com/file/d/1FzyrttkGKHhnGcS5mVw2aJNArD4PV-Xl/view?usp
 ## Real-Time Reflection Detection 
 
 The trained models were integrated with ROS 2 to observe their performance in a real-time inspection scenario. 
+The results of all the models are recorded in the following video:
 
 [![Real-Time Reflection Detection for Reactive Planning in Autonomous Inspections](https://img.youtube.com/vi/GN886TdDpDs/0.jpg)](https://youtu.be/GN886TdDpDs?si=rXla7QeJcC7VNvYq)
 
